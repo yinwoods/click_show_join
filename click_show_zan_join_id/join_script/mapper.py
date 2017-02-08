@@ -1,13 +1,15 @@
 #!/usr/bin/env python
 import sys
 import os
-from util import *
+from util import read_key
+
 
 # 'file' in this case is STDIN
 def read_input(file, separator):
     # Split each line into words
     for line in file:
         yield line.strip().split(separator)
+
 
 def get_file_suffix(file_path):
     if 'NewsImpressionSummary' in file_path:
@@ -18,6 +20,7 @@ def get_file_suffix(file_path):
         return '3'
     else:
         return None
+
 
 def main(separator='\t'):
     # Read the data using read_input
@@ -38,9 +41,8 @@ def main(separator='\t'):
                     map_out.append('-')
             map_out.append(file_suffix)
             map_out.extend(line)
-            print '\t'.join(map_out)
+            print('\t'.join(map_out))
 
 
 if __name__ == "__main__":
     main()
-

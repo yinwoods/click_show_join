@@ -1,5 +1,6 @@
-#coding: utf-8
-from config import *
+# coding: utf-8
+from config import SCHEMA_PREFER
+
 
 def read_schema(file_suffix):
     # file_name = FILENAME_PREFER + '_' + file_suffix
@@ -12,8 +13,10 @@ def read_schema(file_suffix):
                 schema_list.append(line)
     return schema_list
 
+
 def read_key(file_suffix):
     return eval('KEY_' + file_suffix).split(',')
+
 
 def read_output_schema():
     file_name = eval(SCHEMA_PREFER + 'OUTPUT')
@@ -27,5 +30,4 @@ def read_output_schema():
     return schema_list
 
 if __name__ == "__main__":
-    print read_output_schema()
-
+    print(read_output_schema())

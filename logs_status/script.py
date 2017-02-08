@@ -4,7 +4,8 @@ import subprocess
 
 def monitor(host, log_name, log_date, log_update_freq):
     if log_update_freq == 'hourly':
-        url = ('wasb://niphd{host}@nipspark.blob.core.windows.net/dailyCtr/{name}-{date}/*').format(
+        url = ('wasb://niphd{host}@nipspark.blob.core.windows.net'
+               '/dailyCtr/{name}-{date}/*').format(
                 host=host,
                 name=log_name,
                 date=log_date
@@ -13,7 +14,7 @@ def monitor(host, log_name, log_date, log_update_freq):
         subprocess.call(command, shell=True)
     elif log_update_freq == 'daily':
         url = ('wasb://niphd{host}@nipspark.blob.core.windows.net'
-            '/dailyCtr/{name}-{date}').format(
+               '/dailyCtr/{name}-{date}').format(
                 host=host,
                 name=log_name,
                 date=log_date
@@ -21,7 +22,8 @@ def monitor(host, log_name, log_date, log_update_freq):
         command = 'hdfs dfs -test -e {}'.format(url)
         status = subprocess.call(command, shell=True)
         if int(status) == 0:
-            print('wasb://niphd{host}@nipspark.blob.core.windows.net/dailyCtr/{log_name}-{log_date}/00.done'.format(
+            print(('wasb://niphd{host}@nipspark.blob.core.windows.net'
+                  '/dailyCtr/{log_name}-{log_date}/00.done').format(
                 host=host,
                 log_name=log_name,
                 log_date=log_date

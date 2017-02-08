@@ -1,18 +1,19 @@
-#coding: utf-8
+# coding: utf-8
 import os
-from config import mssqlconfig_online, LAST_PUT_TIME_FILE
 import re
-from pathlib import Path
-import os
 import pymssql
 import time
+from config import mssqlconfig_online
+from config import LAST_PUT_TIME_FILE
+
 
 def query(sql):
     with pymssql.connect(**mssqlconfig_online) as conn:
         with conn.cursor(as_dict=True) as cursor:
-            res =cursor.execute(sql)
+            res = cursor.execute(sql)
             res = cursor.fetchall()
     return res
+
 
 def getlasttime():
     lasttime = None
@@ -20,6 +21,7 @@ def getlasttime():
         with open(LAST_PUT_TIME_FILE) as timefile:
             lasttime = timefile.readlines()[-1]
     return lasttime
+
 
 def updatelasttime(lasttime):
     try:
@@ -29,9 +31,12 @@ def updatelasttime(lasttime):
     except:
         return False
 
+
 def databyhourtask(one_hour_ago, ti):
     # try:
-        sql = "select NewsId, [Like], UserId from NewsLikes where Timestamp>='%s' and Timestamp<'%s'" % (one_hour_ago, ti )
+        sql = ("select NewsId, [Like], UserId from "
+               "NewsLikes where Timestamp>='%s' and "
+               "Timestamp<'%s'") % (one_hour_ago, ti)
         print(sql)
         data = query(sql)
         filename = re.sub('-| |:', '', one_hour_ago)
@@ -43,15 +48,17 @@ def databyhourtask(one_hour_ago, ti):
             os.mkdir('./data/%s' % filedate)
         with open(filepath, 'wt') as fh:
             for dt in data:
-                fh.write('%s\t%d\t%d\t%d\n' % (dt['UserId'], dt['NewsId'], 1 if dt['Like'] == 1 else 0,  1 if dt['Like'] == -1 else 0))
-        put_res = os.system("bash ./puthdfs.sh %s %s" % (filedate, filename))
+                fh.write('%s\t%d\t%d\t%d\n' % (dt['UserId'], dt['NewsId'], 1
+                         if dt['Like'] == 1
+                         else 0,  1 if dt['Like'] == -1 else 0))
+        os.system("bash ./puthdfs.sh %s %s" % (filedate, filename))
         return True
-    # except:
-        # return False
+
 
 def main():
     while True:
-        sql = "select top 1 Timestamp as ti from NewsLikes order by Timestamp desc"
+        sql = ("select top 1 Timestamp as ti from "
+               "NewsLikes order by Timestamp desc")
         newest_news = query(sql)
         ti = newest_news[0]['ti']
         ti = ti[:13] + ':00'
@@ -60,11 +67,13 @@ def main():
             lasttime_stamp = 0
         else:
             print(lasttime)
-            lasttime_stamp = int(time.mktime(time.strptime(lasttime.strip(), '%Y-%m-%d %H:%M')))
+            lasttime_stamp = int(time.mktime(
+                time.strptime(lasttime.strip(), '%Y-%m-%d %H:%M')))
 
         ti_stamp = int(time.mktime(time.strptime(ti, '%Y-%m-%d %H:%M')))
         if ti_stamp - lasttime_stamp > 3600:
-            one_hour_ago = time.strftime("%Y-%m-%d %H:%M", time.localtime(ti_stamp - 3600))
+            one_hour_ago = time.strftime(
+                    "%Y-%m-%d %H:%M", time.localtime(ti_stamp - 3600))
             res = databyhourtask(one_hour_ago, ti)
             if res is True:
                 updatelasttime(one_hour_ago,)

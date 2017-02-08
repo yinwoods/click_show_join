@@ -2,6 +2,7 @@ import sys
 import subprocess
 from config import logs_config_table
 
+
 def pre_process(log, dest_pos):
     if log.update_freq == 'hourly' and log.dir_level == 2:
         with open(dest_pos, 'r') as f:
@@ -38,11 +39,13 @@ def pre_process(log, dest_pos):
             pos = pos.replace('.done', '')
             print(line[0], pos, sep='\t')
 
+
 def monitor(host, name, date):
     for log in logs_config_table:
         if log.name == name:
             if log.update_freq == 'hourly':
-                url = ('wasb://niphd{host}@nipspark.blob.core.windows.net/dailyCtr/{name}-{date}/*').format(
+                url = ('wasb://niphd{host}@nipspark.blob.core.windows.net'
+                       '/dailyCtr/{name}-{date}/*').format(
                         host=host,
                         name=log.name,
                         date=date
@@ -51,7 +54,8 @@ def monitor(host, name, date):
                 subprocess.call(command, shell=True)
                 pre_process(log, 'tmp')
             elif log.update_freq == 'daily':
-                url = ('wasb://niphd{host}@nipspark.blob.core.windows.net' '/dailyCtr/{name}-{date}').format(
+                url = ('wasb://niphd{host}@nipspark.blob.core.windows.net'
+                       '/dailyCtr/{name}-{date}').format(
                         host=host,
                         name=log.name,
                         date=date
@@ -62,7 +66,8 @@ def monitor(host, name, date):
                     res = []
                     with open('tmp', 'r') as f:
                         for line in f:
-                            res.append('\t'.join(filter(lambda x: len(x) > 0, line.split(' '))))
+                            res.append('\t'.join(
+                                filter(lambda x: len(x) > 0, line.split(' '))))
 
                     with open('tmp', 'w') as f:
                         for line in res:

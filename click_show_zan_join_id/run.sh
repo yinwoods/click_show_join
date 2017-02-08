@@ -76,7 +76,7 @@ function run(){
 }
 
 updatefiles
-start_date="2017-02-06 13:00"
+start_date="2017-02-08 00:00"
 
 while true
 do

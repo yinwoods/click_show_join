@@ -1,0 +1,5 @@
+*.log
+news_like_to_hdfs_id/data/**
+news_like_to_hdfs_br/data/**
+click_show_zan_join_id/hive/data/**
+click_show_zan_join_br/hive/data/**

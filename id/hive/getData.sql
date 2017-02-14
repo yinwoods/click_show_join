@@ -40,9 +40,9 @@ create external table if not exists click_show_zan_join
 partitioned by (d string, h string)
 row format delimited fields terminated by '\t';
 
-alter table click_show_zan_join add partition(d='${hiveconf:date}', h='${hiveconf:hour}') location 'wasb://niphdid@nipspark.blob.core.windows.net/user/zhangrn/click_show_join/${hiveconf:date}/${hiveconf:hour}';
+alter table click_show_zan_join add partition(d='${hiveconf:date}', h='${hiveconf:hour}') location 'wasb://niphdbr@nipspark.blob.core.windows.net/user/zhangrn/click_show_join/${hiveconf:date}/${hiveconf:hour}';
 
-INSERT OVERWRITE LOCAL DIRECTORY '/home/renning/offline_task/click_show_zan_join_id/hive/data/${hiveconf:date}/${hiveconf:hour}' row format delimited fields terminated by '\t'
+INSERT OVERWRITE LOCAL DIRECTORY '/home/renning/tiny_work/click_show_zan_join/id/hive/data/${hiveconf:date}/${hiveconf:hour}' row format delimited fields terminated by '\t'
 SELECT
     pageindex,
     tag,

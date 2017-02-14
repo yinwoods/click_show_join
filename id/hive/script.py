@@ -8,7 +8,7 @@ def fileExist(latestTime):
     date = latestTime.format('YYYYMMDD')
     hour = latestTime.format('HH')
 
-    command = ('hdfs dfs -test -e wasb://niphdbr@nipspark.blob.core.windows.'
+    command = ('hdfs dfs -test -e wasb://niphdid@nipspark.blob.core.windows.'
                'net/user/zhangrn/click_show_join/{date}/{hour}00/_SUCCESS'
                ).format(date=date, hour=hour)
 
@@ -19,7 +19,7 @@ def fileExist(latestTime):
     else:
         print('start executing hive')
         print('get {date}/{hour}'.format(date=date, hour=hour))
-        command = ('hive -hiveconf date={date}'
+        command = ('hive -hiveconf date={date} '
                    '-hiveconf hour={hour}00 -f getData.sql'
                    ).format(date=date, hour=hour)
         p = subprocess.Popen(command, shell=True)

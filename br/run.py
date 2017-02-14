@@ -51,21 +51,21 @@ def dianzan_log_exist(times):
 
 def main():
 
-    utc_id = arrow.utcnow().replace(hours=+7)
-    utc_id = arrow.get(2017, 2, 8, 8, 0, 0)
+    utc_br = arrow.utcnow().replace(hours=-3)
+    utc_br = arrow.get(2017, 2, 7, 16, 0, 0)
 
     while True:
 
-        hour_left1 = utc_id.replace(hours=-1)
-        hour_left2 = utc_id.replace(hours=-2)
-        hour_left3 = utc_id.replace(hours=-3)
-        hour_left4 = utc_id.replace(hours=-4)
-        hour_left5 = utc_id.replace(hours=-5)
-        hour_left8 = utc_id.replace(hours=-8)
-        hour_left9 = utc_id.replace(hours=-9)
-        hour_left10 = utc_id.replace(hours=-10)
-        hour_left11 = utc_id.replace(hours=-11)
-        hour_left12 = utc_id.replace(hours=-12)
+        hour_left1 = utc_br.replace(hours=-1)
+        hour_left2 = utc_br.replace(hours=-2)
+        hour_left3 = utc_br.replace(hours=-3)
+        hour_left4 = utc_br.replace(hours=-4)
+        hour_left5 = utc_br.replace(hours=-5)
+        hour_left8 = utc_br.replace(hours=-8)
+        hour_left9 = utc_br.replace(hours=-9)
+        hour_left10 = utc_br.replace(hours=-10)
+        hour_left11 = utc_br.replace(hours=-11)
+        hour_left12 = utc_br.replace(hours=-12)
         date = hour_left4.format('YYYYMMDD')
 
         # judge if files needed exist
@@ -110,7 +110,7 @@ def main():
                             hour_left12=hour_left12.format('HH'),
                        )
             subprocess.call(command, shell=True)
-            utc_id = utc_id.replace(hours=+1)
+            utc_br = utc_br.replace(hours=+1)
 
 
 if __name__ == '__main__':

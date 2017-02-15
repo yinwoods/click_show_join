@@ -4,7 +4,7 @@ import subprocess
 from config import IMPRESSION_PATH
 from config import CLICK_PATH
 from config import DIANZAN_PATH
-from config import JOIN_LOG_PATH
+from config import JOIN_LOG_SUCCESS_PATH
 
 
 def impression_log_exist(times):
@@ -52,7 +52,7 @@ def dianzan_log_exist(times):
 def main():
 
     utc_br = arrow.utcnow().replace(hours=-3)
-    utc_br = arrow.get(2017, 2, 7, 16, 0, 0)
+    utc_br = arrow.get(2017, 2, 7, 15, 0, 0)
 
     while True:
 
@@ -110,6 +110,12 @@ def main():
                             hour_left12=hour_left12.format('HH'),
                        )
             subprocess.call(command, shell=True)
+
+            # tag success
+            command = "/usr/bin/hadoop fs -touchz " + JOIN_LOG_SUCCESS_PATH.format(date, hour_left4.format('HH'))
+            print(command)
+            subprocess.call(command, shell=True)
+
             utc_br = utc_br.replace(hours=+1)
 
 

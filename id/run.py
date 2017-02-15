@@ -4,7 +4,7 @@ import subprocess
 from config import IMPRESSION_PATH
 from config import CLICK_PATH
 from config import DIANZAN_PATH
-from config import JOIN_LOG_PATH
+from config import JOIN_LOG_SUCCESS_PATH
 
 
 def impression_log_exist(times):
@@ -55,7 +55,6 @@ def main():
     utc_id = arrow.get(2017, 2, 8, 8, 0, 0)
 
     while True:
-
         hour_left1 = utc_id.replace(hours=-1)
         hour_left2 = utc_id.replace(hours=-2)
         hour_left3 = utc_id.replace(hours=-3)
@@ -83,6 +82,7 @@ def main():
             print('wait 30 minutes')
             time.sleep(1800)
         else:
+
             print('start to execute hive sql')
             command = 'hive\
                        -hiveconf date={date}\
@@ -110,6 +110,12 @@ def main():
                             hour_left12=hour_left12.format('HH'),
                        )
             subprocess.call(command, shell=True)
+
+            # tag success
+            command = "/usr/bin/hadoop fs -touchz " + JOIN_LOG_SUCCESS_PATH.format(date, hour_left4.format('HH'))
+            print(command)
+            subprocess.call(command, shell=True)
+
             utc_id = utc_id.replace(hours=+1)
 
 

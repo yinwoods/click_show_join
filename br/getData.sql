@@ -37,7 +37,7 @@ create external table if not exists impression
 partitioned by (d string, h string)
 row format delimited fields terminated by '\t';
 
-alter table impression add partition(d='${hiveconf:date}', h='${hiveconf:hour_left4}') location 'wasb://niphdid@nipspark.blob.core.windows.net/dailyCtr/NewsImpressionSummary-${hiveconf:date}/${hiveconf:hour_left4}';
+alter table impression add partition(d='${hiveconf:date}', h='${hiveconf:hour_left4}') location 'wasb://niphdbr@nipspark.blob.core.windows.net/dailyCtr/NewsImpressionSummary-${hiveconf:date}/${hiveconf:hour_left4}';
 
 
 drop table if exists click;
@@ -100,16 +100,11 @@ alter table dianzan add partition(d='${hiveconf:date}', h='${hiveconf:hour_left8
 drop table if exists click_show_join;
 create temporary table if not exists click_show_join as
 select
-    impression.pageindex,
-    impression.tag,
-    impression.newstype,
-    impression.mediaid,
-    impression.categoryid,
-    impression.requestcategoryid,
+    impression.*,
     IF(click.newsid is NULL, 0, 1) as clicked,
-    click.index,
-    dianzan.vote_up,
-    dianzan.vote_down
+    IF(click.index is NULL, 0, 1) as click_index,
+    IF(dianzan.vote_up is NULL, 0, 1) as vote_up,
+    IF(dianzan.vote_down is NULL, 0, 1) as vote_down
 FROM
 impression
     LEFT JOIN
@@ -129,4 +124,4 @@ dianzan
     and impression.newsid = dianzan.newsid
 );
 
-INSERT OVERWRITE DIRECTORY 'wasb://niphdbr@nipspark.blob.core.windows.net/user/zhangrn/click_show_join/${hiveconf:date}/${hiveconf:hour_left4}' ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t' SELECT * from click_show_join;
+INSERT OVERWRITE DIRECTORY 'wasb://niphdbr@nipspark.blob.core.windows.net/user/zhangrn/click_show_join/${hiveconf:date}/${hiveconf:hour_left4}00' ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t' SELECT * from click_show_join;

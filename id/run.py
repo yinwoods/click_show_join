@@ -3,7 +3,6 @@ import arrow
 import subprocess
 from config import IMPRESSION_PATH
 from config import CLICK_PATH
-from config import DIANZAN_PATH
 from config import JOIN_LOG_SUCCESS_PATH
 
 
@@ -35,24 +34,10 @@ def click_log_exist(times):
     return 0
 
 
-def dianzan_log_exist(times):
-    for time in times:
-        date = time.format('YYYYMMDD')
-        hour = time.format('HH')
-        command = '/usr/bin/hadoop fs -test -e '
-        command += DIANZAN_PATH.format(date, hour)
-        print(command)
-        statu = subprocess.call(command, shell=True)
-        if statu == 1:
-            print('dianzan log with {}/{} not ready'.format(date, hour))
-            return 1
-    return 0
-
-
 def main():
 
     utc_id = arrow.utcnow().replace(hours=+7)
-    utc_id = arrow.get(2017, 2, 8, 8, 0, 0)
+    utc_id = arrow.get(2017, 2, 8, 4, 0, 0)
 
     while True:
         hour_left1 = utc_id.replace(hours=-1)
@@ -74,11 +59,7 @@ def main():
                 [hour_left5, hour_left4, hour_left3, hour_left2, hour_left1]
             )
 
-        dianzan_statu = dianzan_log_exist(
-                [hour_left12, hour_left11, hour_left10, hour_left9, hour_left8]
-            )
-
-        if any([impression_statu, click_statu, dianzan_statu]):
+        if any([impression_statu, click_statu]):
             print('wait 30 minutes')
             time.sleep(1800)
         else:

@@ -52,7 +52,7 @@ def dianzan_log_exist(times):
 def main():
 
     utc_br = arrow.utcnow().replace(hours=-3)
-    utc_br = arrow.get(2017, 2, 7, 15, 0, 0)
+    utc_br = arrow.get(2017, 2, 8, 4, 0, 0)
 
     while True:
 

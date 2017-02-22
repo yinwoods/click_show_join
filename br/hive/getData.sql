@@ -1,6 +1,7 @@
 drop table if exists click_show_zan_join;
 create external table if not exists click_show_zan_join
 (
+    pageid string,
     pageindex int,
     newsid int,
     userid string,
@@ -44,7 +45,6 @@ alter table click_show_zan_join add partition(d='${hiveconf:date}') location 'wa
 
 INSERT OVERWRITE LOCAL DIRECTORY '/home/renning/tiny_work/click_show_zan_join/br/hive/data/${hiveconf:date}/' row format delimited fields terminated by '\t'
 SELECT
-    pageindex,
     tag,
     newstype,
     mediaid,
@@ -52,13 +52,12 @@ SELECT
     requestcategoryid,
     click_index,
     COUNT(*),
+    SUM(clicked),
     SUM(vote_up),
-    SUM(vote_down),
-    SUM(clicked)
+    SUM(vote_down)
 FROM
     click_show_zan_join
 GROUP BY
-    pageindex,
     tag,
     newstype,
     mediaid,

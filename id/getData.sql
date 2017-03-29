@@ -34,10 +34,10 @@ create external table if not exists impression
     userip string,
     requestcategoryid int
 )
-partitioned by (d string, h string)
+partitioned by (y string, m string, d string, h string)
 row format delimited fields terminated by '\t';
 
-alter table impression add partition(d='${hiveconf:date}', h='${hiveconf:hour_left4}') location 'wasb://niphdid@nipspark.blob.core.windows.net/dailyCtr/NewsImpressionSummary-${hiveconf:date}/${hiveconf:hour_left4}';
+alter table impression add partition(y='${hiveconf:year}', m='${hiveconf:month}', d='${hiveconf:day}', h='${hiveconf:hour_left4}') location 'wasb://id-newsimpression@nipspark.blob.core.windows.net/${hiveconf:year}/${hiveconf:month}/${hiveconf:day}/${hiveconf:hour_left4}/';
 
 
 drop table if exists click;
@@ -69,14 +69,13 @@ create external table if not exists click
     gogleadstatus string,
     userip string
 )
-partitioned by (d string, h string)
+partitioned by (y string, m string, d string, h string)
 row format delimited fields terminated by '\t';
 
-alter table click add partition(d='${hiveconf:date}', h='${hiveconf:hour_left5}') location 'wasb://niphdid@nipspark.blob.core.windows.net/dailyCtr/NewsClickSummary-${hiveconf:date}/${hiveconf:hour_left5}';
-alter table click add partition(d='${hiveconf:date}', h='${hiveconf:hour_left4}') location 'wasb://niphdid@nipspark.blob.core.windows.net/dailyCtr/NewsClickSummary-${hiveconf:date}/${hiveconf:hour_left4}';
-alter table click add partition(d='${hiveconf:date}', h='${hiveconf:hour_left3}') location 'wasb://niphdid@nipspark.blob.core.windows.net/dailyCtr/NewsClickSummary-${hiveconf:date}/${hiveconf:hour_left3}';
-alter table click add partition(d='${hiveconf:date}', h='${hiveconf:hour_left2}') location 'wasb://niphdid@nipspark.blob.core.windows.net/dailyCtr/NewsClickSummary-${hiveconf:date}/${hiveconf:hour_left2}';
-alter table click add partition(d='${hiveconf:date}', h='${hiveconf:hour_left1}') location 'wasb://niphdid@nipspark.blob.core.windows.net/dailyCtr/NewsClickSummary-${hiveconf:date}/${hiveconf:hour_left1}';
+alter table click add partition(y='${hiveconf:year}', m='${hiveconf:month}', d='${hiveconf:day}', h='${hiveconf:hour_left4}') location 'wasb://id-newsclick@nipspark.blob.core.windows.net/${hiveconf:year}/${hiveconf:month}/${hiveconf:day}/${hiveconf:hour_left4}/';
+alter table click add partition(y='${hiveconf:year}', m='${hiveconf:month}', d='${hiveconf:day}', h='${hiveconf:hour_left3}') location 'wasb://id-newsclick@nipspark.blob.core.windows.net/${hiveconf:year}/${hiveconf:month}/${hiveconf:day}/${hiveconf:hour_left3}/';
+alter table click add partition(y='${hiveconf:year}', m='${hiveconf:month}', d='${hiveconf:day}', h='${hiveconf:hour_left2}') location 'wasb://id-newsclick@nipspark.blob.core.windows.net/${hiveconf:year}/${hiveconf:month}/${hiveconf:day}/${hiveconf:hour_left2}/';
+alter table click add partition(y='${hiveconf:year}', m='${hiveconf:month}', d='${hiveconf:day}', h='${hiveconf:hour_left1}') location 'wasb://id-newsclick@nipspark.blob.core.windows.net/${hiveconf:year}/${hiveconf:month}/${hiveconf:day}/${hiveconf:hour_left1}/';
 
 
 drop table if exists click_show_join;

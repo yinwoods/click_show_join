@@ -5,6 +5,9 @@ import subprocess
 
 
 def fileExist(latestTime):
+    """
+    param: latestTIme 判断下一份拼接日志是否存在
+    """
     date = latestTime.format('YYYYMMDD')
 
     command = ('hdfs dfs -test -e wasb://niphdid@nipspark.blob.core.windows.'
@@ -25,6 +28,9 @@ def fileExist(latestTime):
 
 
 def getLatestHour():
+    """
+    return: 返回data目录下的最新日期+1，也即下一份日志对应的日期
+    """
     destpos = os.path.join(os.getcwd(), 'data')
     date = max(os.listdir(destpos))
     year = int(date[0:4])

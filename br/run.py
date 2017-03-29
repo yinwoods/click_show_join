@@ -3,48 +3,53 @@ import arrow
 import subprocess
 from config import IMPRESSION_PATH
 from config import CLICK_PATH
-from config import DIANZAN_PATH
 from config import JOIN_LOG_SUCCESS_PATH
 
 
 def impression_log_exist(times):
-    for time in times:
-        date = time.format('YYYYMMDD')
-        hour = time.format('HH')
+    for time_ in times:
+        year = time_.format('YYYY')
+        month = time_.format('MM')
+        day = time_.format('DD')
+        hour = time_.format('HH')
         command = '/usr/bin/hadoop fs -test -e '
-        command += IMPRESSION_PATH.format(date, hour)
+        command += IMPRESSION_PATH.format(
+                        year=year,
+                        month=month,
+                        day=day,
+                        hour=hour)
         statu = subprocess.call(command, shell=True)
         print(command)
         if statu == 1:
-            print('impression log with {}/{} not ready'.format(date, hour))
+            print('impression log with {year}/{month}/{day}/{hour} not ready'.format(
+                    year=year,
+                    month=month,
+                    day=day,
+                    hour=hour))
             return 1
     return 0
 
 
 def click_log_exist(times):
-    for time in times:
-        date = time.format('YYYYMMDD')
-        hour = time.format('HH')
+    for time_ in times:
+        year = time_.format('YYYY')
+        month = time_.format('MM')
+        day = time_.format('DD')
+        hour = time_.format('HH')
         command = '/usr/bin/hadoop fs -test -e '
-        command += CLICK_PATH.format(date, hour)
-        print(command)
+        command += CLICK_PATH.format(
+                        year=year,
+                        month=month,
+                        day=day,
+                        hour=hour)
         statu = subprocess.call(command, shell=True)
-        if statu == 1:
-            print('click log with {}/{} not ready'.format(date, hour))
-            return 1
-    return 0
-
-
-def dianzan_log_exist(times):
-    for time in times:
-        date = time.format('YYYYMMDD')
-        hour = time.format('HH')
-        command = '/usr/bin/hadoop fs -test -e '
-        command += DIANZAN_PATH.format(date, hour)
         print(command)
-        statu = subprocess.call(command, shell=True)
         if statu == 1:
-            print('dianzan log with {}/{} not ready'.format(date, hour))
+            print('click log with {year}/{month}/{day}/{hour} not ready'.format(
+                    year=year,
+                    month=month,
+                    day=day,
+                    hour=hour))
             return 1
     return 0
 
@@ -52,7 +57,7 @@ def dianzan_log_exist(times):
 def main():
 
     utc_br = arrow.utcnow().replace(hours=-3)
-    utc_br = arrow.get(2017, 2, 8, 4, 0, 0)
+    utc_br = arrow.get(2017, 3, 27, 4, 0, 0)
 
     while True:
 
@@ -67,6 +72,9 @@ def main():
         hour_left11 = utc_br.replace(hours=-11)
         hour_left12 = utc_br.replace(hours=-12)
         date = hour_left4.format('YYYYMMDD')
+        year = hour_left4.format('YYYY')
+        month = hour_left4.format('MM')
+        day = hour_left4.format('DD')
 
         # judge if files needed exist
         impression_statu = impression_log_exist([hour_left4])
@@ -75,16 +83,15 @@ def main():
                 [hour_left5, hour_left4, hour_left3, hour_left2, hour_left1]
             )
 
-        dianzan_statu = dianzan_log_exist(
-                [hour_left12, hour_left11, hour_left10, hour_left9, hour_left8]
-            )
-
-        if any([impression_statu, click_statu, dianzan_statu]):
+        if any([impression_statu, click_statu]):
             print('wait 30 minutes')
             time.sleep(1800)
         else:
             print('start to execute hive sql')
             command = 'hive\
+                       -hiveconf year={year}\
+                       -hiveconf month={month}\
+                       -hiveconf day={day}\
                        -hiveconf date={date}\
                        -hiveconf hour_left1={hour_left1}\
                        -hiveconf hour_left2={hour_left2}\
@@ -97,6 +104,9 @@ def main():
                        -hiveconf hour_left11={hour_left11}\
                        -hiveconf hour_left12={hour_left12}\
                        -f getData.sql'.format(
+                            year=year,
+                            month=month,
+                            day=day,
                             date=date,
                             hour_left1=hour_left1.format('HH'),
                             hour_left2=hour_left2.format('HH'),

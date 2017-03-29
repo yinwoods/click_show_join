@@ -1,5 +1,5 @@
-drop table if exists click_show_zan_join;
-create external table if not exists click_show_zan_join
+drop table if exists click_show_join;
+create external table if not exists click_show_join
 (
     pageid string,
     pageindex int,
@@ -33,17 +33,19 @@ create external table if not exists click_show_zan_join
     gogleadstatus string,
     userip string,
     requestcategoryid int,
+    year_pat string,
+    month_pat string,
+    day_pat string,
+    hour_pat string,
     clicked int,
-    click_index int,
-    vote_up int,
-    vote_down int
+    click_index int
 )
 partitioned by (d string)
 row format delimited fields terminated by '\t';
 
-alter table click_show_zan_join add partition(d='${hiveconf:date}') location 'wasb://niphdbr@nipspark.blob.core.windows.net/user/zhangrn/click_show_join/${hiveconf:date}/';
+alter table click_show_join add partition(d='${hiveconf:date}') location 'wasb://niphdbr@nipspark.blob.core.windows.net/user/zhangrn/click_show_join/${hiveconf:date}/';
 
-INSERT OVERWRITE LOCAL DIRECTORY '/home/renning/tiny_work/click_show_zan_join/br/hive/data/${hiveconf:date}/' row format delimited fields terminated by '\t'
+INSERT OVERWRITE LOCAL DIRECTORY '/home/renning/tiny_work/click_show_join/br/hive/data/${hiveconf:date}/' row format delimited fields terminated by '\t'
 SELECT
     tag,
     newstype,
@@ -52,11 +54,9 @@ SELECT
     requestcategoryid,
     click_index,
     COUNT(*),
-    SUM(clicked),
-    SUM(vote_up),
-    SUM(vote_down)
+    SUM(clicked)
 FROM
-    click_show_zan_join
+    click_show_join
 GROUP BY
     tag,
     newstype,

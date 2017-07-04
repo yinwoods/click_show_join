@@ -5,3 +5,4 @@ news_like_to_hdfs_id/data/**
 news_like_to_hdfs_br/data/**
 id/hive/data/**
 br/hive/data/**
+me/hive/data/**

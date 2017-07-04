@@ -1,5 +1,5 @@
-drop table if exists id_click_show_join;
-create external table if not exists id_click_show_join
+drop table if exists me_click_show_join;
+create external table if not exists me_click_show_join
 (
     pageid string,
     pageindex int,
@@ -39,9 +39,9 @@ create external table if not exists id_click_show_join
 partitioned by (d string)
 row format delimited fields terminated by '\t';
 
-alter table id_click_show_join add partition(d='${hiveconf:date}') location 'wasb://niphdid@nipspark.blob.core.windows.net/user/zhangrn/click_show_join/${hiveconf:date}/';
+alter table me_click_show_join add partition(d='${hiveconf:date}') location 'wasb://niphdme@nipspark.blob.core.windows.net/user/zhangrn/click_show_join/${hiveconf:date}/';
 
-INSERT OVERWRITE LOCAL DIRECTORY '/home/yinwoods/tiny_work/click_show_join/id/hive/data/${hiveconf:date}/' row format delimited fields terminated by '\t'
+INSERT OVERWRITE LOCAL DIRECTORY '/home/yinwoods/tiny_work/click_show_join/me/hive/data/${hiveconf:date}/' row format delimited fields terminated by '\t'
 SELECT
     tag,
     newstype,
@@ -52,7 +52,7 @@ SELECT
     COUNT(*),
     SUM(clicked)
 FROM
-    id_click_show_join
+    me_click_show_join
 GROUP BY
     tag,
     newstype,

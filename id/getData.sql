@@ -1,5 +1,5 @@
-drop table if exists impression;
-create external table if not exists impression
+drop table if exists id_impression;
+create external table if not exists id_impression
 (
     pageid string,
     pageindex int,
@@ -30,18 +30,18 @@ create external table if not exists impression
     categoryid int,
     hot string,
     googleadid string,
-    gogleadstatus string,
+    googleadstatus string,
     userip string,
     requestcategoryid int
 )
 partitioned by (y string, m string, d string, h string)
 row format delimited fields terminated by '\t';
 
-alter table impression add partition(y='${hiveconf:year}', m='${hiveconf:month}', d='${hiveconf:day}', h='${hiveconf:hour_left4}') location 'wasb://id-newsimpression@nipspark.blob.core.windows.net/${hiveconf:year}/${hiveconf:month}/${hiveconf:day}/${hiveconf:hour_left4}/';
+alter table id_impression add partition(y='${hiveconf:year}', m='${hiveconf:month}', d='${hiveconf:day}', h='${hiveconf:hour_left4}') location 'wasb://id-newsimpression@nipspark.blob.core.windows.net/${hiveconf:year}/${hiveconf:month}/${hiveconf:day}/${hiveconf:hour_left4}/';
 
 
-drop table if exists click;
-create external table if not exists click
+drop table if exists id_click;
+create external table if not exists id_click
 (
     pageid string,
     pageindex int,
@@ -72,28 +72,29 @@ create external table if not exists click
 partitioned by (y string, m string, d string, h string)
 row format delimited fields terminated by '\t';
 
-alter table click add partition(y='${hiveconf:year}', m='${hiveconf:month}', d='${hiveconf:day}', h='${hiveconf:hour_left4}') location 'wasb://id-newsclick@nipspark.blob.core.windows.net/${hiveconf:year}/${hiveconf:month}/${hiveconf:day}/${hiveconf:hour_left4}/';
-alter table click add partition(y='${hiveconf:year}', m='${hiveconf:month}', d='${hiveconf:day}', h='${hiveconf:hour_left3}') location 'wasb://id-newsclick@nipspark.blob.core.windows.net/${hiveconf:year}/${hiveconf:month}/${hiveconf:day}/${hiveconf:hour_left3}/';
-alter table click add partition(y='${hiveconf:year}', m='${hiveconf:month}', d='${hiveconf:day}', h='${hiveconf:hour_left2}') location 'wasb://id-newsclick@nipspark.blob.core.windows.net/${hiveconf:year}/${hiveconf:month}/${hiveconf:day}/${hiveconf:hour_left2}/';
-alter table click add partition(y='${hiveconf:year}', m='${hiveconf:month}', d='${hiveconf:day}', h='${hiveconf:hour_left1}') location 'wasb://id-newsclick@nipspark.blob.core.windows.net/${hiveconf:year}/${hiveconf:month}/${hiveconf:day}/${hiveconf:hour_left1}/';
+alter table id_click add partition(y='${hiveconf:year}', m='${hiveconf:month}', d='${hiveconf:day}', h='${hiveconf:hour_left5}') location 'wasb://id-newsclick@nipspark.blob.core.windows.net/${hiveconf:year}/${hiveconf:month}/${hiveconf:day}/${hiveconf:hour_left5}/';
+alter table id_click add partition(y='${hiveconf:year}', m='${hiveconf:month}', d='${hiveconf:day}', h='${hiveconf:hour_left4}') location 'wasb://id-newsclick@nipspark.blob.core.windows.net/${hiveconf:year}/${hiveconf:month}/${hiveconf:day}/${hiveconf:hour_left4}/';
+alter table id_click add partition(y='${hiveconf:year}', m='${hiveconf:month}', d='${hiveconf:day}', h='${hiveconf:hour_left3}') location 'wasb://id-newsclick@nipspark.blob.core.windows.net/${hiveconf:year}/${hiveconf:month}/${hiveconf:day}/${hiveconf:hour_left3}/';
+alter table id_click add partition(y='${hiveconf:year}', m='${hiveconf:month}', d='${hiveconf:day}', h='${hiveconf:hour_left2}') location 'wasb://id-newsclick@nipspark.blob.core.windows.net/${hiveconf:year}/${hiveconf:month}/${hiveconf:day}/${hiveconf:hour_left2}/';
+alter table id_click add partition(y='${hiveconf:year}', m='${hiveconf:month}', d='${hiveconf:day}', h='${hiveconf:hour_left1}') location 'wasb://id-newsclick@nipspark.blob.core.windows.net/${hiveconf:year}/${hiveconf:month}/${hiveconf:day}/${hiveconf:hour_left1}/';
 
 
-drop table if exists click_show_join;
-create temporary table if not exists click_show_join as
+drop table if exists id_click_show_join;
+create temporary table if not exists id_click_show_join as
 select
-    impression.*,
-    IF(click.newsid is NULL, 0, 1) as clicked,
-    click.index
+    new_id_impression.*,
+    IF(new_id_click.newsid is NULL, 0, 1) as id_clicked,
+    new_id_click.index
 FROM
-impression
+(select distinct pageid, pageindex, newsid, userid, time, tag, appversion, metaversion, devicetype, deviceplatform, imei, imsi, dpi, resolution, osversion, osapi, latitude, longtitude, network, secret, countryid, updateversioncode, newstype, mediaid, imagecount, videolength, categoryid, hot, googleadid, googleadstatus, userip, requestcategoryid from id_impression) new_id_impression
     LEFT JOIN
-click
+(select distinct newsid, index, userid, pageid, pageindex from id_click) new_id_click
     ON
 (
-    impression.userid = click.userid
-    and impression.newsid = click.newsid
-    and impression.pageid = click.pageid
-    and impression.pageindex = click.pageindex
+    new_id_impression.userid = new_id_click.userid
+    and new_id_impression.newsid = new_id_click.newsid
+    and new_id_impression.pageid = new_id_click.pageid
+    and new_id_impression.pageindex = new_id_click.pageindex
 );
 
-INSERT OVERWRITE DIRECTORY 'wasb://niphdid@nipspark.blob.core.windows.net/user/zhangrn/click_show_join/${hiveconf:date}/${hiveconf:hour_left4}00' ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t' SELECT * from click_show_join;
+INSERT OVERWRITE DIRECTORY 'wasb://niphdid@nipspark.blob.core.windows.net/user/zhangrn/click_show_join/${hiveconf:date}/${hiveconf:hour_left4}00' ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t' SELECT * from id_click_show_join;

@@ -57,7 +57,7 @@ def click_log_exist(times):
 def main():
 
     utc_br = arrow.utcnow().replace(hours=-3)
-    utc_br = arrow.get(2017, 3, 27, 4, 0, 0)
+    utc_br = arrow.get(2017, 7, 3, 0, 0, 0)
 
     while True:
 
@@ -66,11 +66,6 @@ def main():
         hour_left3 = utc_br.replace(hours=-3)
         hour_left4 = utc_br.replace(hours=-4)
         hour_left5 = utc_br.replace(hours=-5)
-        hour_left8 = utc_br.replace(hours=-8)
-        hour_left9 = utc_br.replace(hours=-9)
-        hour_left10 = utc_br.replace(hours=-10)
-        hour_left11 = utc_br.replace(hours=-11)
-        hour_left12 = utc_br.replace(hours=-12)
         date = hour_left4.format('YYYYMMDD')
         year = hour_left4.format('YYYY')
         month = hour_left4.format('MM')
@@ -98,11 +93,6 @@ def main():
                        -hiveconf hour_left3={hour_left3}\
                        -hiveconf hour_left4={hour_left4}\
                        -hiveconf hour_left5={hour_left5}\
-                       -hiveconf hour_left8={hour_left8}\
-                       -hiveconf hour_left9={hour_left9}\
-                       -hiveconf hour_left10={hour_left10}\
-                       -hiveconf hour_left11={hour_left11}\
-                       -hiveconf hour_left12={hour_left12}\
                        -f getData.sql'.format(
                             year=year,
                             month=month,
@@ -113,11 +103,6 @@ def main():
                             hour_left3=hour_left3.format('HH'),
                             hour_left4=hour_left4.format('HH'),
                             hour_left5=hour_left5.format('HH'),
-                            hour_left8=hour_left8.format('HH'),
-                            hour_left9=hour_left9.format('HH'),
-                            hour_left10=hour_left10.format('HH'),
-                            hour_left11=hour_left11.format('HH'),
-                            hour_left12=hour_left12.format('HH'),
                        )
             subprocess.call(command, shell=True)
 

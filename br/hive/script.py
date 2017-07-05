@@ -7,7 +7,7 @@ import subprocess
 def fileExist(latestTime):
     date = latestTime.format('YYYYMMDD')
 
-    command = ('hdfs dfs -test -e wasb://niphdbr@nipspark.blob.core.windows.'
+    command = ('hdfs dfs -test -e wasb://niphdbr@nipdc.blob.core.windows.'
                'net/user/zhangrn/click_show_join/{date}/2300/_SUCCESS'
                ).format(date=date)
 

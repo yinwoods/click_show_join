@@ -39,7 +39,7 @@ create external table if not exists br_click_show_join
 partitioned by (d string)
 row format delimited fields terminated by '\t';
 
-alter table br_click_show_join add partition(d='${hiveconf:date}') location 'wasb://niphdbr@nipspark.blob.core.windows.net/user/zhangrn/click_show_join/${hiveconf:date}/';
+alter table br_click_show_join add partition(d='${hiveconf:date}') location 'wasb://niphdbr@nipdc.blob.core.windows.net/user/zhangrn/click_show_join/${hiveconf:date}/';
 
 INSERT OVERWRITE LOCAL DIRECTORY '/home/yinwoods/tiny_work/click_show_join/br/hive/data/${hiveconf:date}/' row format delimited fields terminated by '\t'
 SELECT

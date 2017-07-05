@@ -10,7 +10,7 @@ def fileExist(latestTime):
     """
     date = latestTime.format('YYYYMMDD')
 
-    command = ('hdfs dfs -test -e wasb://niphdme@nipspark.blob.core.windows.'
+    command = ('hdfs dfs -test -e wasb://niphdme@nipdc.blob.core.windows.'
                'net/user/zhangrn/click_show_join/{date}/2300/_SUCCESS'
                ).format(date=date)
 

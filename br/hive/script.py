@@ -25,7 +25,8 @@ def fileExist(latestTime):
 
 
 def getLatestHour():
-    destpos = os.path.join(os.getcwd(), 'data')
+    base_path = '/datadrive3/yinwoods/tiny_work/click_show_join/br/hive/'
+    destpos = os.path.join(base_path, 'data')
     date = max(os.listdir(destpos))
     year = int(date[0:4])
     month = int(date[4:6])

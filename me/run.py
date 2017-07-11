@@ -64,8 +64,7 @@ def click_log_exist(times):
 
 def main():
 
-    utc_id = arrow.utcnow().replace(hours=+7)
-    utc_id = arrow.get(2017, 7, 4, 0, 0, 0)
+    utc_id = arrow.get(2017, 7, 8, 4, 0, 0)
 
     while True:
         hour_left1 = utc_id.replace(hours=-1)

@@ -31,7 +31,8 @@ def getLatestHour():
     """
     return: 返回data目录下的最新日期+1，也即下一份日志对应的日期
     """
-    destpos = os.path.join(os.getcwd(), 'data')
+    base_path = '/datadrive3/yinwoods/tiny_work/click_show_join/id/hive/'
+    destpos = os.path.join(base_path, 'data')
     date = max(os.listdir(destpos))
     year = int(date[0:4])
     month = int(date[4:6])
